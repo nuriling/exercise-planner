@@ -1,0 +1,1412 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>40년 경력 선생님 모임의 올백 로드맵 & 통합 플래너</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700;800&family=Gamja+Flower&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        teacher: { 50: '#fdf8f6', 100: '#f2e8e5', 500: '#d97706', 600: '#b45309', 800: '#78350f', 900: '#451a03' },
+                        indigo_custom: { 50: '#eef2ff', 600: '#4f46e5', 700: '#4338ca' }
+                    },
+                    fontFamily: {
+                        sans: ['Noto Sans KR', 'sans-serif'],
+                        hand: ['Gamja Flower', 'cursive']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { font-family: 'Noto Sans KR', sans-serif; background-color: #f8fafc; }
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: #f1f5f9; border-radius: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+        .tab-btn.active { background-color: #ffffff; color: #4f46e5; border-bottom: 3px solid #4f46e5; font-weight: 700; }
+        input[type="number"]::-webkit-inner-spin-button, 
+        input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col">
+
+    <header class="bg-gradient-to-r from-indigo-900 via-indigo-800 to-slate-900 text-white shadow-lg sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 py-3 sm:px-6 lg:px-8 flex flex-wrap justify-between items-center gap-3">
+            <div class="flex items-center space-x-3">
+                <div class="w-11 h-11 rounded-full bg-amber-400 text-slate-900 flex items-center justify-center font-bold text-xl shadow-md border-2 border-amber-200">
+                    <i class="fa-solid font-hand text-2xl">師</i>
+                </div>
+                <div>
+                    <h1 class="text-lg sm:text-xl font-bold tracking-tight flex items-center gap-2">
+                        올백 로드맵 & 통합 플래너
+                        <span class="text-xs bg-amber-400 text-slate-900 px-2 py-0.5 rounded-full font-semibold">40년 경력 선생님 모임 멘토링</span>
+                    </h1>
+                    <p class="text-xs text-indigo-200">"월간·주간·일간 플래너와 과목별 수행·지필 비율 커스텀으로 만점을 향해 질주하자!"</p>
+                </div>
+            </div>
+
+            <div class="flex items-center space-x-2 text-xs sm:text-sm">
+                <div class="bg-indigo-800/80 px-3 py-1.5 rounded-lg border border-indigo-700 flex items-center gap-2 cursor-pointer hover:bg-indigo-700 transition" onclick="openExamModal()">
+                    <i class="fa-solid fa-calendar-days text-amber-400"></i>
+                    <span>지필고사 D-Day: <strong id="header-nearest-dday" class="text-amber-300">D-14</strong></span>
+                    <i class="fa-solid fa-pen text-[10px] opacity-70 ml-1"></i>
+                </div>
+                <button onclick="initData()" class="bg-slate-700 hover:bg-slate-600 text-slate-200 px-2.5 py-1.5 rounded-lg text-xs transition flex items-center gap-1" title="샘플 데이터 복원">
+                    <i class="fa-solid fa-rotate-right"></i> <span class="hidden sm:inline">예시 데이터</span>
+                </button>
+            </div>
+        </div>
+
+        <nav class="bg-indigo-950/60 border-t border-indigo-800/50">
+            <div class="max-w-7xl mx-auto px-2 sm:px-6 flex overflow-x-auto custom-scrollbar text-sm font-medium">
+                <button onclick="switchTab('dashboard')" id="tab-dashboard" class="tab-btn active px-4 py-3 whitespace-nowrap text-slate-300 hover:text-white transition flex items-center gap-2">
+                    <i class="fa-solid fa-chart-line text-amber-400"></i> 종합 대시보드
+                </button>
+                <button onclick="switchTab('monthly')" id="tab-monthly" class="tab-btn px-4 py-3 whitespace-nowrap text-slate-300 hover:text-white transition flex items-center gap-2">
+                    <i class="fa-solid fa-calendar-days text-amber-400"></i> 월간 플래너
+                </button>
+                <button onclick="switchTab('weekly')" id="tab-weekly" class="tab-btn px-4 py-3 whitespace-nowrap text-slate-300 hover:text-white transition flex items-center gap-2">
+                    <i class="fa-solid fa-calendar-week text-purple-400"></i> 주간 플래너
+                </button>
+                <button onclick="switchTab('daily')" id="tab-daily" class="tab-btn px-4 py-3 whitespace-nowrap text-slate-300 hover:text-white transition flex items-center gap-2">
+                    <i class="fa-solid fa-stopwatch text-rose-400"></i> 일간 & 뽀모도로
+                </button>
+                <button onclick="switchTab('performance')" id="tab-performance" class="tab-btn px-4 py-3 whitespace-nowrap text-slate-300 hover:text-white transition flex items-center gap-2">
+                    <i class="fa-solid fa-clipboard-check text-emerald-400"></i> 수행평가 센터
+                </button>
+                <button onclick="switchTab('roadmap')" id="tab-roadmap" class="tab-btn px-4 py-3 whitespace-nowrap text-slate-300 hover:text-white transition flex items-center gap-2">
+                    <i class="fa-solid fa-route text-sky-400"></i> 지필 4주 로드맵
+                </button>
+                <button onclick="switchTab('grades')" id="tab-grades" class="tab-btn px-4 py-3 whitespace-nowrap text-slate-300 hover:text-white transition flex items-center gap-2">
+                    <i class="fa-solid fa-award text-yellow-400"></i> 성적 & 총평
+                </button>
+            </div>
+        </nav>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex-grow w-full">
+
+        <div id="teacher-banner" class="bg-gradient-to-r from-amber-50 to-orange-50 border-l-4 border-amber-500 rounded-r-xl p-4 mb-6 shadow-sm flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+            <div class="flex items-start gap-3">
+                <div class="text-3xl text-amber-600 mt-1"><i class="fa-solid fa-quote-left"></i></div>
+                <div>
+                    <h3 class="font-bold text-slate-900 text-sm sm:text-base flex items-center gap-2">
+                        <span>선생님 모임의 오늘의 조언</span>
+                        <span id="banner-tag" class="text-xs bg-amber-200 text-amber-900 px-2 py-0.5 rounded font-normal">통합 플래너 활용법</span>
+                    </h3>
+                    <p id="teacher-quote" class="text-slate-700 text-xs sm:text-sm mt-1 font-hand text-lg leading-relaxed">
+                        "과목별로 수행평가 반영 비율과 시험 비중이 다르단다! 성적 탭에서 내가 직접 과목을 선택하고 비율과 수행평가 이름을 입력해 정확하게 분석해보렴."
+                    </p>
+                </div>
+            </div>
+            <button onclick="refreshTeacherQuote()" class="text-xs bg-white border border-amber-300 text-amber-800 hover:bg-amber-100 px-3 py-1.5 rounded-lg shadow-sm font-medium transition whitespace-nowrap self-end md:self-center">
+                <i class="fa-solid fa-lightbulb text-amber-500 mr-1"></i> 다른 조언 보기
+            </button>
+        </div>
+
+        <!-- Dashboard Section -->
+        <section id="view-dashboard" class="tab-content space-y-6">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+                <div class="bg-gradient-to-br from-indigo-900 to-indigo-950 text-white p-6 rounded-2xl shadow-md border border-indigo-800 flex flex-col justify-between">
+                    <div>
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="text-xs font-bold uppercase tracking-wider text-amber-400">지필고사 D-Day 관리</span>
+                            <button onclick="openExamModal()" class="text-xs bg-indigo-800 hover:bg-indigo-700 px-2.5 py-1 rounded text-indigo-200 transition"><i class="fa-solid fa-pen-to-square"></i> 날짜 설정</button>
+                        </div>
+                        <div class="text-3xl font-black mt-2 tracking-tight text-amber-300" id="dash-exam-title">1학기 기말고사</div>
+                        <div class="text-4xl font-black mt-1 text-white" id="dash-exam-dday">D-14</div>
+                        <p class="text-xs text-indigo-200 mt-2" id="dash-exam-date-label">시험일: 2026-07-15</p>
+                    </div>
+                    <div class="mt-6 pt-4 border-t border-indigo-800/60 flex justify-between text-xs">
+                        <span class="text-indigo-300">4주 로드맵 진행 중</span>
+                        <button onclick="switchTab('roadmap')" class="text-amber-300 font-bold hover:underline">로드맵 보기 &rarr;</button>
+                    </div>
+                </div>
+
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex flex-col justify-between">
+                    <div>
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="text-xs font-bold uppercase tracking-wider text-emerald-600">출석 및 월간 플래너 요약</span>
+                            <button onclick="switchTab('monthly')" class="text-xs text-slate-500 hover:underline">상세보기</button>
+                        </div>
+                        <h4 class="font-bold text-slate-800 text-lg">오늘의 출석 도장</h4>
+                        <p class="text-xs text-slate-500 mt-1">오늘 날짜 도장을 찍으면 영구 저장되며 되돌릴 수 없습니다.</p>
+                        <div class="mt-4 flex items-center justify-between bg-emerald-50 border border-emerald-200 p-3 rounded-xl">
+                            <div class="flex items-center gap-2">
+                                <div class="w-8 h-8 rounded-full bg-emerald-600 text-white flex items-center justify-center font-bold font-hand text-sm">師</div>
+                                <span class="text-xs font-bold text-emerald-900" id="dash-streak-text">연속 0일 출석 달성중!</span>
+                            </div>
+                            <button onclick="toggleTodayAttendance()" id="dash-today-btn" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1.5 rounded-lg text-xs font-semibold shadow transition">출석 체크</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex flex-col justify-between">
+                    <div>
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="text-xs font-bold uppercase tracking-wider text-purple-600">주간 & 일간 플래너</span>
+                            <button onclick="switchTab('weekly')" class="text-xs text-slate-500 hover:underline">바로가기</button>
+                        </div>
+                        <h4 class="font-bold text-slate-800 text-lg">이번 주 핵심 목표</h4>
+                        <div id="dash-weekly-preview" class="mt-3 text-xs text-slate-600 space-y-1.5">
+                            <!-- Dynamically loaded -->
+                        </div>
+                    </div>
+                    <div class="mt-4 pt-4 border-t border-slate-100 flex justify-between items-center">
+                        <span class="text-xs text-slate-400">매일 꾸준함이 합격을 만듭니다</span>
+                        <button onclick="switchTab('daily')" class="bg-purple-600 hover:bg-purple-700 text-white px-3 py-1.5 rounded-lg text-xs font-semibold shadow transition">일간 플래너 열기</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <div class="lg:col-span-2 bg-white p-5 rounded-2xl shadow-sm border border-slate-200">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="font-bold text-slate-800 flex items-center gap-2">
+                            <i class="fa-solid fa-triangle-exclamation text-amber-500"></i> 마감 임박 수행평가
+                        </h3>
+                        <button onclick="switchTab('performance')" class="text-xs text-indigo-600 hover:underline font-semibold">전체보기 &rarr;</button>
+                    </div>
+                    <div id="dashboard-urgent-perf" class="space-y-3">
+                        <!-- Loaded dynamically -->
+                    </div>
+                </div>
+
+                <div class="bg-indigo-900 text-white p-5 rounded-2xl shadow-md flex flex-col justify-between">
+                    <div>
+                        <h3 class="text-sm font-bold mb-3 flex items-center gap-2 text-amber-300">
+                            <i class="fa-solid fa-graduation-cap"></i> 베테랑의 Golden Rules
+                        </h3>
+                        <div class="space-y-3 text-xs">
+                            <div class="bg-indigo-800/60 p-3 rounded-xl border border-indigo-700/60">
+                                <span class="font-bold text-amber-300 block mb-1">1. 채점기준표(루브릭)가 답이다</span>
+                                <p class="text-indigo-100">감점 요인(글자수, 출처, 기한)만 엄수해라.</p>
+                            </div>
+                            <div class="bg-indigo-800/60 p-3 rounded-xl border border-indigo-700/60">
+                                <span class="font-bold text-amber-300 block mb-1">2. 지필평가는 '4회독' 주기 사용</span>
+                                <p class="text-indigo-100">1회독(개념) &rarr; 2회독(문제) &rarr; 3회독(오답) &rarr; 4회독(백지)</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Monthly Planner Section -->
+        <section id="view-monthly" class="tab-content space-y-6 hidden">
+            <div class="bg-gradient-to-br from-amber-50 via-orange-50 to-amber-100/60 p-6 rounded-2xl shadow-sm border-2 border-amber-300 relative overflow-hidden">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
+                    <div>
+                        <div class="flex items-center gap-2 mb-1">
+                            <span class="bg-amber-500 text-white text-xs font-bold px-2.5 py-0.5 rounded-full shadow-sm"><i class="fa-solid fa-calendar-days mr-1"></i> 월간 플래너 & 출석부</span>
+                            <span class="text-xs font-semibold text-amber-900 bg-amber-200/80 px-2.5 py-0.5 rounded-full" id="attendance-streak-badge">🔥 연속 0일 출석 중!</span>
+                        </div>
+                        <h2 class="text-xl sm:text-2xl font-black text-amber-950 tracking-tight">월간 일정 관리 및 매일 출석 도장 (한번 찍으면 변경 불가)</h2>
+                        <p class="text-xs sm:text-sm text-amber-800 mt-1">오늘 날짜를 클릭하여 출석 도장을 찍으세요. 한 번 찍힌 도장은 되돌릴 수 없습니다.</p>
+                    </div>
+                    <div class="flex items-center gap-2 bg-white/85 backdrop-blur px-4 py-2 rounded-xl border border-amber-300 shadow-sm self-stretch md:self-auto justify-between md:justify-start">
+                        <button onclick="changeAttendanceMonth(-1)" class="w-8 h-8 rounded-lg bg-amber-100 hover:bg-amber-200 text-amber-900 font-bold transition flex items-center justify-center">
+                            <i class="fa-solid fa-chevron-left text-xs"></i>
+                        </button>
+                        <span id="attendance-month-title" class="font-bold text-amber-950 text-sm sm:text-base px-2 min-w-[110px] text-center">2026년 7월</span>
+                        <button onclick="changeAttendanceMonth(1)" class="w-8 h-8 rounded-lg bg-amber-100 hover:bg-amber-200 text-amber-900 font-bold transition flex items-center justify-center">
+                            <i class="fa-solid fa-chevron-right text-xs"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="bg-white/95 backdrop-blur rounded-xl p-4 sm:p-5 shadow-sm border border-amber-200">
+                    <div class="grid grid-cols-7 gap-1 text-center font-bold text-xs sm:text-sm text-slate-600 mb-3 pb-2 border-b border-slate-100">
+                        <div class="text-rose-600">일</div>
+                        <div>월</div>
+                        <div>화</div>
+                        <div>수</div>
+                        <div>목</div>
+                        <div>금</div>
+                        <div class="text-sky-600">토</div>
+                    </div>
+                    <div id="attendance-calendar-grid" class="grid grid-cols-7 gap-1.5 sm:gap-2">
+                        <!-- Calendar grid rendered dynamically -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Weekly Planner Section -->
+        <section id="view-weekly" class="tab-content space-y-6 hidden">
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+                    <div>
+                        <h2 class="text-xl font-bold text-slate-900 flex items-center gap-2">
+                            <i class="fa-solid fa-calendar-week text-purple-600"></i> 주간 과목별 목표 & 스터디 플래너
+                        </h2>
+                        <p class="text-xs text-slate-500 mt-1">이번 주 실천해야 할 과목별 핵심 공부 목표를 설정하고 체크하세요.</p>
+                    </div>
+                    <button onclick="addWeeklyTask()" class="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-xl text-xs font-semibold shadow transition flex items-center gap-2">
+                        <i class="fa-solid fa-plus"></i> 주간 목표 추가
+                    </button>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4" id="weekly-columns-container">
+                    <!-- Rendered dynamically -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Daily Planner Section -->
+        <section id="view-daily" class="tab-content space-y-6 hidden">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <div class="lg:col-span-2 bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex flex-col">
+                    <div class="flex justify-between items-center mb-4">
+                        <div>
+                            <h2 class="text-xl font-bold text-slate-900 flex items-center gap-2">
+                                <i class="fa-solid fa-list-check text-rose-500"></i> 오늘 반드시 끝낼 투두리스트
+                            </h2>
+                            <p class="text-xs text-slate-500 mt-1">오늘 날짜의 학습 과제를 추가하고 완료 체크를 하세요.</p>
+                        </div>
+                    </div>
+
+                    <div class="flex gap-2 mb-4">
+                        <input type="text" id="daily-todo-input" placeholder="예: 수학 올림피아드 기출 3장 풀기" class="flex-grow border border-slate-300 rounded-xl px-3 py-2 text-xs sm:text-sm focus:ring-2 focus:ring-rose-500 outline-none">
+                        <button onclick="addDailyTodo()" class="bg-rose-500 hover:bg-rose-600 text-white px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition whitespace-nowrap shadow">
+                            추가하기
+                        </button>
+                    </div>
+
+                    <div class="space-y-2.5 overflow-y-auto max-h-[350px] custom-scrollbar pr-1" id="daily-todo-list">
+                        <!-- Loaded dynamically -->
+                    </div>
+                </div>
+
+                <div class="bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900 text-white p-6 rounded-2xl shadow-lg border border-indigo-800 text-center flex flex-col justify-between">
+                    <div>
+                        <span class="text-xs font-semibold bg-indigo-800 text-indigo-200 px-3 py-1 rounded-full uppercase tracking-wider">몰입 스터디 타이머</span>
+                        <div class="my-6">
+                            <div id="pomo-display" class="text-5xl font-extrabold tracking-tight font-mono text-amber-400 drop-shadow-md">25:00</div>
+                            <p id="pomo-mode-label" class="text-xs text-indigo-300 mt-2 font-medium">집중 시간 (Focus Mode)</p>
+                        </div>
+                        <div class="flex justify-center gap-3 mb-6">
+                            <button id="pomo-start-btn" onclick="togglePomodoro()" class="w-24 bg-amber-400 hover:bg-amber-300 text-slate-900 py-2.5 rounded-xl font-bold text-xs shadow transition flex justify-center items-center gap-2">
+                                <i class="fa-solid fa-play"></i> 시작
+                            </button>
+                            <button onclick="resetPomodoro()" class="w-24 bg-indigo-800 hover:bg-indigo-700 text-indigo-200 py-2.5 rounded-xl font-semibold text-xs transition">
+                                <i class="fa-solid fa-rotate-left"></i> 리셋
+                            </button>
+                        </div>
+                    </div>
+                    <div class="flex justify-center gap-2 text-[11px]">
+                        <button onclick="setPomodoroTime(25, '집중 시간')" class="bg-indigo-900/80 border border-indigo-700 hover:bg-indigo-800 px-2.5 py-1.5 rounded-lg text-indigo-200">25분</button>
+                        <button onclick="setPomodoroTime(50, '지필 심화 모드')" class="bg-indigo-900/80 border border-indigo-700 hover:bg-indigo-800 px-2.5 py-1.5 rounded-lg text-indigo-200">50분</button>
+                        <button onclick="setPomodoroTime(5, '짧은 휴식')" class="bg-indigo-900/80 border border-indigo-700 hover:bg-indigo-800 px-2.5 py-1.5 rounded-lg text-indigo-200">5분 휴식</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Performance Center Section -->
+        <section id="view-performance" class="tab-content space-y-6 hidden">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-5 rounded-2xl shadow-sm border border-slate-200">
+                <div>
+                    <h2 class="text-xl font-bold text-slate-900 flex items-center gap-2">
+                        <i class="fa-solid fa-clipboard-check text-emerald-600"></i> 수행평가 만점 관리 센터
+                    </h2>
+                    <p class="text-xs text-slate-500 mt-1">과목별 수행평가 일정을 직접 등록하고, 채점기준표(루브릭) 및 세부사항을 기록·수정하거나 완료 후 삭제하세요.</p>
+                </div>
+                <button onclick="openPerformanceModal()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2.5 rounded-xl font-semibold text-sm shadow-md transition flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-plus"></i> 새 수행평가 등록
+                </button>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5" id="performance-grid">
+                <!-- Dynamically rendered -->
+            </div>
+        </section>
+
+        <!-- Roadmap Section -->
+        <section id="view-roadmap" class="tab-content space-y-6 hidden">
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                <div>
+                    <h2 class="text-xl font-bold text-slate-900 flex items-center gap-2">
+                        <i class="fa-solid fa-route text-sky-600"></i> 지필평가 올백 4주 로드맵
+                    </h2>
+                    <p class="text-xs text-slate-500 mt-1">시험일 기준 D-28부터 시작되는 체계적인 4단계 회독법입니다.</p>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4" id="roadmap-stages-container">
+            </div>
+
+            <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200">
+                <div class="flex justify-between items-center mb-4 flex-wrap gap-2">
+                    <h3 class="font-bold text-slate-800 flex items-center gap-2">
+                        <i class="fa-solid fa-book-open text-sky-600"></i> 과목별 4회독 달성 현황 (과목 추가 가능)
+                    </h3>
+                    <button onclick="addGradeSubject()" class="bg-sky-600 hover:bg-sky-700 text-white px-3.5 py-1.5 rounded-lg text-xs font-semibold shadow transition flex items-center gap-1.5">
+                        <i class="fa-solid fa-plus"></i> 과목 추가
+                    </button>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-xs sm:text-sm">
+                        <thead>
+                            <tr class="bg-slate-100 text-slate-600 border-b border-slate-200">
+                                <th class="p-3 rounded-l-lg">과목명</th>
+                                <th class="p-3">목표 점수</th>
+                                <th class="p-3 text-center">1회독(개념)</th>
+                                <th class="p-3 text-center">2회독(문제)</th>
+                                <th class="p-3 text-center">3회독(오답)</th>
+                                <th class="p-3 text-center">4회독(백지)</th>
+                                <th class="p-3 text-center rounded-r-lg">삭제</th>
+                            </tr>
+                        </thead>
+                        <tbody id="subject-roadmap-tbody" class="divide-y divide-slate-100">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- Grades & Customization Section -->
+        <section id="view-grades" class="tab-content space-y-6 hidden">
+            <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200">
+                <h2 class="text-xl font-bold text-slate-900 flex items-center gap-2">
+                    <i class="fa-solid fa-award text-yellow-500"></i> 과목 선택, 수행평가 이름 및 반영 비율 커스텀 성적표
+                </h2>
+                <p class="text-xs text-slate-500 mt-1">
+                    학생 입장에서 내가 원하는 과목을 추가하고, 수행평가 이름과 반영 비율(수행/중간/기말 %) 및 점수를 직접 입력하여 완벽하게 계산할 수 있습니다.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div class="bg-gradient-to-br from-indigo-600 to-indigo-800 text-white p-4 rounded-2xl shadow-md border border-indigo-700">
+                    <span class="text-xs opacity-90 font-medium flex items-center gap-1"><i class="fa-solid fa-calculator text-amber-300"></i> 전체 평균 점수</span>
+                    <div class="text-3xl font-black mt-2 tracking-tight" id="stat-overall-avg">0점</div>
+                </div>
+                <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-200 border-l-4 border-l-emerald-500">
+                    <span class="text-xs text-slate-500 font-medium flex items-center gap-1"><i class="fa-solid fa-clipboard-check text-emerald-600"></i> 수행평가 100점 환산 평균</span>
+                    <div class="text-2xl font-bold text-slate-800 mt-1" id="stat-perf-avg">0점</div>
+                </div>
+                <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-200 border-l-4 border-l-sky-500">
+                    <span class="text-xs text-slate-500 font-medium flex items-center gap-1"><i class="fa-solid fa-pen-to-square text-sky-600"></i> 지필평가 평균 점수</span>
+                    <div class="text-2xl font-bold text-slate-800 mt-1" id="stat-exam-avg">0점</div>
+                </div>
+                <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-200 border-l-4 border-l-amber-500">
+                    <span class="text-xs text-slate-500 font-medium flex items-center gap-1"><i class="fa-solid fa-trophy text-amber-500"></i> 최고 득점 과목</span>
+                    <div class="text-xl font-bold text-slate-800 mt-1 truncate" id="stat-top-subject">-</div>
+                    <span class="text-[11px] text-amber-600 font-semibold mt-1 block" id="stat-top-score">-</span>
+                </div>
+            </div>
+
+            <!-- Advanced Custom Grade Editor Table -->
+            <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200">
+                <div class="flex justify-between items-center mb-4 flex-wrap gap-2">
+                    <div>
+                        <h3 class="font-bold text-slate-800 text-sm">과목 및 수행평가 커스텀 입력표</h3>
+                        <p class="text-[11px] text-slate-500">과목 프리셋에서 선택하거나 직접 입력하고, 수행평가 명칭, 각 비중(수행/중간/기말 합 100%)을 자유롭게 설정하세요.</p>
+                    </div>
+                    <div class="flex gap-2">
+                        <select id="quick-subject-select" class="bg-slate-50 border border-slate-300 text-xs rounded-lg px-2.5 py-1.5 outline-none font-medium text-slate-700">
+                            <option value="국어">국어</option>
+                            <option value="수학">수학</option>
+                            <option value="영어">영어</option>
+                            <option value="통합사회">통합사회</option>
+                            <option value="통합과학">통합과학</option>
+                            <option value="한국사">한국사</option>
+                            <option value="정보">정보</option>
+                        </select>
+                        <button onclick="addGradeSubjectFromSelect()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1.5 rounded-lg text-xs font-semibold shadow transition whitespace-nowrap">
+                            <i class="fa-solid fa-plus"></i> 과목 추가
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="overflow-x-auto pb-4">
+                    <table class="w-full text-left text-xs sm:text-sm min-w-[950px]">
+                        <thead>
+                            <tr class="bg-slate-100 text-slate-700 border-b border-slate-200">
+                                <th class="p-2.5 w-24">과목명</th>
+                                <th class="p-2.5 w-36">수행평가 이름<br><span class="text-[10px] text-slate-400">직접 입력 가능</span></th>
+                                <th class="p-2.5 w-32 text-center">반영 비율 (%)<br><span class="text-[10px] text-slate-400">수행 / 중간 / 기말</span></th>
+                                <th class="p-2.5 text-center bg-emerald-50 w-32">수행평가 점수<br><span class="text-[10px] text-slate-400">획득 / 만점</span></th>
+                                <th class="p-2.5 text-center bg-sky-50 w-24">중간고사<br><span class="text-[10px] text-slate-400">100점 만점</span></th>
+                                <th class="p-2.5 text-center bg-indigo-50 w-24">기말고사<br><span class="text-[10px] text-slate-400">100점 만점</span></th>
+                                <th class="p-2.5 text-center w-24">최종환산</th>
+                                <th class="p-2.5 text-center w-20">예상등급</th>
+                                <th class="p-2.5 text-center w-12">삭제</th>
+                            </tr>
+                        </thead>
+                        <tbody id="grade-calc-tbody" class="divide-y divide-slate-100">
+                            <!-- Dynamic inputs loaded here -->
+                        </tbody>
+                    </table>
+                </div>
+                <p class="text-xs text-rose-500 mt-2 italic">* 비율의 합이 100%가 되도록 조정해주세요 (예: 30 / 35 / 35). 숫자를 변경하면 즉시 총평이 업데이트됩니다.</p>
+            </div>
+
+            <!-- Dynamic Teacher Report -->
+            <div class="bg-gradient-to-br from-amber-50 to-orange-100 border-2 border-amber-300 rounded-2xl p-6 shadow-md relative">
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="w-12 h-12 rounded-full bg-amber-500 text-white flex items-center justify-center font-bold text-2xl shadow">師</div>
+                    <div>
+                        <h3 class="font-bold text-amber-950 text-base sm:text-lg">40년 경력 선생님 모임의 실시간 커스텀 성적 멘토링</h3>
+                    </div>
+                </div>
+                <div id="teacher-report-content" class="bg-white/90 p-5 rounded-xl text-slate-800 text-sm leading-relaxed font-hand text-xl border border-amber-200/60 min-h-[150px]">
+                    <!-- Report Content -->
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Exam Date Modal -->
+    <div id="exam-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl border border-slate-200 space-y-4">
+            <div class="flex justify-between items-center">
+                <h3 class="font-bold text-slate-900 text-lg flex items-center gap-2">
+                    <i class="fa-solid fa-calendar-days text-indigo-600"></i> 지필평가 일정 설정
+                </h3>
+                <button onclick="closeExamModal()" class="text-slate-400 hover:text-slate-600 text-lg"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div>
+                <label class="block text-xs font-semibold text-slate-600 mb-1">시험 명칭</label>
+                <input type="text" id="modal-exam-name" class="w-full border border-slate-300 rounded-xl px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 outline-none" value="1학기 기말고사">
+            </div>
+            <div>
+                <label class="block text-xs font-semibold text-slate-600 mb-1">시험 시작일</label>
+                <input type="date" id="modal-exam-date" class="w-full border border-slate-300 rounded-xl px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 outline-none">
+            </div>
+            <div class="flex justify-end gap-2 pt-2">
+                <button onclick="closeExamModal()" class="bg-slate-200 hover:bg-slate-300 text-slate-700 px-4 py-2 rounded-xl text-xs font-semibold transition">취소</button>
+                <button onclick="saveExamSettings()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-xl text-xs font-semibold shadow transition">저장하기</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Custom Message Modal -->
+    <div id="custom-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-sm w-full p-6 shadow-2xl border border-slate-200 text-center space-y-4">
+            <div class="w-12 h-12 rounded-full bg-amber-100 text-amber-600 flex items-center justify-center mx-auto text-xl font-bold">師</div>
+            <p id="custom-modal-msg" class="text-sm font-medium text-slate-800 leading-relaxed"></p>
+            <button onclick="closeCustomModal()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-2.5 rounded-xl font-semibold text-xs transition shadow">확인</button>
+        </div>
+    </div>
+
+    <!-- Performance Registration / Edit Modal -->
+    <div id="performance-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl border border-slate-200 space-y-4">
+            <div class="flex justify-between items-center">
+                <h3 class="font-bold text-slate-900 text-lg flex items-center gap-2" id="perf-modal-title">
+                    <i class="fa-solid fa-clipboard-check text-emerald-600"></i> 새 수행평가 등록
+                </h3>
+                <button onclick="closePerformanceModal()" class="text-slate-400 hover:text-slate-600 text-lg"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <input type="hidden" id="perf-edit-id" value="">
+            <div>
+                <label class="block text-xs font-semibold text-slate-600 mb-1">과목명</label>
+                <input type="text" id="perf-input-subj" class="w-full border border-slate-300 rounded-xl px-3 py-2 text-sm focus:ring-2 focus:ring-emerald-500 outline-none" placeholder="예: 국어, 수학, 통합사회">
+            </div>
+            <div>
+                <label class="block text-xs font-semibold text-slate-600 mb-1">수행평가명</label>
+                <input type="text" id="perf-input-title" class="w-full border border-slate-300 rounded-xl px-3 py-2 text-sm focus:ring-2 focus:ring-emerald-500 outline-none" placeholder="예: 현대시 비판적 읽기 서술형">
+            </div>
+            <div class="grid grid-cols-2 gap-3">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-600 mb-1">유형</label>
+                    <input type="text" id="perf-input-type" class="w-full border border-slate-300 rounded-xl px-3 py-2 text-sm focus:ring-2 focus:ring-emerald-500 outline-none" placeholder="예: 보고서, 서술형, 발표">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-600 mb-1">마감일</label>
+                    <input type="date" id="perf-input-date" class="w-full border border-slate-300 rounded-xl px-3 py-2 text-sm focus:ring-2 focus:ring-emerald-500 outline-none">
+                </div>
+            </div>
+            <div>
+                <label class="block text-xs font-semibold text-slate-600 mb-1">반영 비율 (%)</label>
+                <input type="number" id="perf-input-ratio" class="w-full border border-slate-300 rounded-xl px-3 py-2 text-sm focus:ring-2 focus:ring-emerald-500 outline-none" value="20">
+            </div>
+            <div>
+                <label class="block text-xs font-semibold text-slate-600 mb-1">세부사항 (채점기준 루브릭 및 메모)</label>
+                <textarea id="perf-input-details" rows="3" class="w-full border border-slate-300 rounded-xl px-3 py-2 text-sm focus:ring-2 focus:ring-emerald-500 outline-none" placeholder="분량 및 감점 요인 등 상세 기록"></textarea>
+            </div>
+            <div class="flex justify-end gap-2 pt-2">
+                <button onclick="closePerformanceModal()" class="bg-slate-200 hover:bg-slate-300 text-slate-700 px-4 py-2 rounded-xl text-xs font-semibold transition">취소</button>
+                <button onclick="savePerformanceModal()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-xl text-xs font-semibold shadow transition">저장하기</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Weekly Task Modal -->
+    <div id="weekly-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl border border-slate-200 space-y-4">
+            <div class="flex justify-between items-center">
+                <h3 class="font-bold text-slate-900 text-lg flex items-center gap-2">
+                    <i class="fa-solid fa-calendar-week text-purple-600"></i> 주간 학습 목표 추가
+                </h3>
+                <button onclick="closeWeeklyModal()" class="text-slate-400 hover:text-slate-600 text-lg"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div>
+                <label class="block text-xs font-semibold text-slate-600 mb-1">과목명 (직접 입력)</label>
+                <input type="text" id="weekly-input-subj" class="w-full border border-slate-300 rounded-xl px-3 py-2 text-sm focus:ring-2 focus:ring-purple-500 outline-none" placeholder="예: 국어, 수학, 영어 등">
+            </div>
+            <div>
+                <label class="block text-xs font-semibold text-slate-600 mb-1">주간 학습 목표 내용</label>
+                <textarea id="weekly-input-task" rows="3" class="w-full border border-slate-300 rounded-xl px-3 py-2 text-sm focus:ring-2 focus:ring-purple-500 outline-none" placeholder="예: 교과서 3단원 문법 핵심 정리 및 기출문제 풀이"></textarea>
+            </div>
+            <div class="flex justify-end gap-2 pt-2">
+                <button onclick="closeWeeklyModal()" class="bg-slate-200 hover:bg-slate-300 text-slate-700 px-4 py-2 rounded-xl text-xs font-semibold transition">취소</button>
+                <button onclick="saveWeeklyModal()" class="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-xl text-xs font-semibold shadow transition">추가하기</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Subject Modal -->
+    <div id="subject-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-sm w-full p-6 shadow-2xl border border-slate-200 space-y-4">
+            <div class="flex justify-between items-center">
+                <h3 class="font-bold text-slate-900 text-base flex items-center gap-2">
+                    <i class="fa-solid fa-book text-sky-600"></i> 새 과목 추가
+                </h3>
+                <button onclick="closeSubjectModal()" class="text-slate-400 hover:text-slate-600 text-lg"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div>
+                <label class="block text-xs font-semibold text-slate-600 mb-1">과목명 입력</label>
+                <input type="text" id="modal-subject-name" class="w-full border border-slate-300 rounded-xl px-3 py-2 text-sm focus:ring-2 focus:ring-sky-500 outline-none" placeholder="예: 한국사, 물리, 화학 등">
+            </div>
+            <div class="flex justify-end gap-2 pt-2">
+                <button onclick="closeSubjectModal()" class="bg-slate-200 hover:bg-slate-300 text-slate-700 px-4 py-2 rounded-xl text-xs font-semibold transition">취소</button>
+                <button onclick="saveSubjectModal()" class="bg-sky-600 hover:bg-sky-700 text-white px-4 py-2 rounded-xl text-xs font-semibold shadow transition">추가하기</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showModal(msg) {
+            document.getElementById('custom-modal-msg').innerText = msg;
+            document.getElementById('custom-modal').classList.remove('hidden');
+        }
+        function closeCustomModal() {
+            document.getElementById('custom-modal').classList.add('hidden');
+        }
+
+        function getFutureDateStr(days) {
+            const d = new Date();
+            d.setDate(d.getDate() + days);
+            return d.toISOString().split('T')[0];
+        }
+
+        const TEACHER_QUOTES = [
+            { tag: '과목 및 비율 설정', text: '"과목별로 수행평가 비중과 지필 비중이 다르단다! 성적 탭에서 내 과목을 선택하고 수행평가 이름과 반영 비율을 직접 입력해보렴."' },
+            { tag: '수행 만점 전략', text: '"수행평가는 지필평가의 부담을 줄여주는 최고의 보너스란다. 감점 요인 3가지(기한, 양식, 루브릭)만 지키면 누구나 만점을 받을 수 있어!"' },
+            { tag: '지필 올백 전략', text: '"시험문제의 80%는 교과서와 선생님의 수업 설명에서 나온단다. 백지 복습법으로 교과서를 그대로 머릿속에 담아보렴."' },
+            { tag: '마인드 컨트롤', text: '"성적이 올랐다고 자만하지 말고, 떨어졌다고 좌절하지 마라. 공부는 매일 한 걸음씩 걷는 마라톤이란다."' }
+        ];
+
+        let appData = {
+            examName: '1학기 기말고사',
+            examDate: getFutureDateStr(14),
+            subjects: [
+                { id: 1, name: '국어', perfTitle: '문학 감상 보고서', target: 100, r1: true, r2: true, r3: false, r4: false, midScore: 85, finalScore: 90, perfScore: 28, perfMax: 30, perfRatio: 30, midRatio: 35, finalRatio: 35 },
+                { id: 2, name: '수학', perfTitle: '수학 심화 논술', target: 100, r1: true, r2: false, r3: false, r4: false, midScore: 78, finalScore: 88, perfScore: 25, perfMax: 30, perfRatio: 30, midRatio: 35, finalRatio: 35 },
+                { id: 3, name: '영어', perfTitle: '영어 말하기 발표', target: 100, r1: true, r2: true, r3: true, r4: false, midScore: 92, finalScore: 96, perfScore: 38, perfMax: 40, perfRatio: 40, midRatio: 30, finalRatio: 30 }
+            ],
+            performances: [
+                { id: 1, subject: '국어', title: '현대시 비판적 읽기 서술형', type: '서술형', date: getFutureDateStr(3), ratio: 20, details: '분량: A4 1장 이상. 채점기준(루브릭): 작가 의도 파악 10점, 문장 표현력 10점.' },
+                { id: 2, subject: '통합과학', title: '신재생 에너지 탐구 보고서', type: '보고서', date: getFutureDateStr(6), ratio: 30, details: '출처 표기 필수, 태양광/풍력 발전 비교 분석 그래프 포함.' }
+            ],
+            weeklyTasks: [
+                { id: 1, subject: '국어', task: '교과서 3단원 문법 핵심 정리', done: true },
+                { id: 2, subject: '수학', task: '함수의 극한 고난도 기출 20제', done: false },
+                { id: 3, subject: '영어', task: '모의고사 지문 분석 및 구문 암기', done: false },
+                { id: 4, subject: '과학', task: '화학 반응식 실전 문제 풀이', done: true }
+            ],
+            dailyTodos: [
+                { id: 1, text: '국어 문법 프린트 2회독 복습', done: true },
+                { id: 2, text: '수학 수학의 정석 연습문제 풀기', done: false },
+                { id: 3, text: '영어 단어 50개 암기 및 테스트', done: false }
+            ],
+            teacherQuoteIndex: 0
+        };
+
+        function loadDataFromStorage() {
+            try {
+                const saved = localStorage.getItem('teacher_planner_all_data_v3');
+                if (saved) {
+                    appData = JSON.parse(saved);
+                }
+            } catch(e) {
+                console.error("Failed to load saved data", e);
+            }
+        }
+
+        function saveDataToStorage() {
+            try {
+                localStorage.setItem('teacher_planner_all_data_v3', JSON.stringify(appData));
+            } catch(e) {
+                console.error("Failed to save data", e);
+            }
+        }
+
+        function initData() {
+            if(confirm("기본 예시 데이터로 초기화하시겠습니까?")) {
+                localStorage.removeItem('teacher_planner_all_data_v3');
+                location.reload();
+            }
+        }
+
+        let pomoTimeLeft = 25 * 60;
+        let pomoInterval = null;
+        let isPomoRunning = false;
+
+        function updatePomodoroDisplay() {
+            const m = Math.floor(pomoTimeLeft / 60).toString().padStart(2, '0');
+            const s = (pomoTimeLeft % 60).toString().padStart(2, '0');
+            const disp = document.getElementById('pomo-display');
+            if(disp) disp.innerText = `${m}:${s}`;
+        }
+
+        function togglePomodoro() {
+            const btn = document.getElementById('pomo-start-btn');
+            if (!isPomoRunning) {
+                isPomoRunning = true;
+                if(btn) btn.innerHTML = '<i class="fa-solid fa-pause"></i> 일시정지';
+                pomoInterval = setInterval(() => {
+                    if (pomoTimeLeft > 0) {
+                        pomoTimeLeft--;
+                        updatePomodoroDisplay();
+                    } else {
+                        clearInterval(pomoInterval);
+                        isPomoRunning = false;
+                        if(btn) btn.innerHTML = '<i class="fa-solid fa-play"></i> 시작';
+                        showModal("설정된 집중 시간이 종료되었습니다! 잠시 휴식을 취하거나 다음 과목으로 넘어가세요.");
+                    }
+                }, 1000);
+            } else {
+                isPomoRunning = false;
+                clearInterval(pomoInterval);
+                if(btn) btn.innerHTML = '<i class="fa-solid fa-play"></i> 시작';
+            }
+        }
+
+        function resetPomodoro() {
+            isPomoRunning = false;
+            clearInterval(pomoInterval);
+            pomoTimeLeft = 25 * 60;
+            updatePomodoroDisplay();
+            const btn = document.getElementById('pomo-start-btn');
+            if(btn) btn.innerHTML = '<i class="fa-solid fa-play"></i> 시작';
+        }
+
+        function setPomodoroTime(minutes, label) {
+            isPomoRunning = false;
+            clearInterval(pomoInterval);
+            pomoTimeLeft = minutes * 60;
+            updatePomodoroDisplay();
+            const lbl = document.getElementById('pomo-mode-label');
+            if(lbl) lbl.innerText = label;
+            const btn = document.getElementById('pomo-start-btn');
+            if(btn) btn.innerHTML = '<i class="fa-solid fa-play"></i> 시작';
+        }
+
+        window.onload = function() {
+            loadDataFromStorage();
+            renderAll();
+            updatePomodoroDisplay();
+        };
+
+        function renderAll() {
+            updateExamDdayHeader();
+            renderDashboard();
+            renderAttendanceCalendar();
+            renderWeeklyPlanner();
+            renderDailyTodos();
+            renderPerformance();
+            renderRoadmap();
+            renderGrades();
+            calculateGrades();
+        }
+
+        function openExamModal() {
+            document.getElementById('modal-exam-name').value = appData.examName;
+            document.getElementById('modal-exam-date').value = appData.examDate;
+            document.getElementById('exam-modal').classList.remove('hidden');
+        }
+        function closeExamModal() {
+            document.getElementById('exam-modal').classList.add('hidden');
+        }
+        function saveExamSettings() {
+            appData.examName = document.getElementById('modal-exam-name').value || '기말고사';
+            appData.examDate = document.getElementById('modal-exam-date').value || getFutureDateStr(14);
+            saveDataToStorage();
+            closeExamModal();
+            updateExamDdayHeader();
+            showModal("지필평가 일정이 성공적으로 저장되었습니다!");
+        }
+
+        function updateExamDdayHeader() {
+            const today = new Date();
+            today.setHours(0,0,0,0);
+            const examD = new Date(appData.examDate);
+            examD.setHours(0,0,0,0);
+            const diffTime = examD - today;
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+            
+            let ddayStr = diffDays > 0 ? `D-${diffDays}` : (diffDays === 0 ? 'D-Day' : `D+${Math.abs(diffDays)}`);
+            document.getElementById('header-nearest-dday').innerText = ddayStr;
+            
+            const dashTitle = document.getElementById('dash-exam-title');
+            const dashDday = document.getElementById('dash-exam-dday');
+            const dashDateLbl = document.getElementById('dash-exam-date-label');
+            if(dashTitle) dashTitle.innerText = appData.examName;
+            if(dashDday) dashDday.innerText = ddayStr;
+            if(dashDateLbl) dashDateLbl.innerText = `시험일: ${appData.examDate}`;
+        }
+
+        let attendanceViewDate = new Date();
+        function getAttendanceData() {
+            try { return JSON.parse(localStorage.getItem('teacher_attendance_v3')) || {}; } catch(e) { return {}; }
+        }
+        function saveAttendanceData(data) { localStorage.setItem('teacher_attendance_v3', JSON.stringify(data)); }
+
+        function changeAttendanceMonth(delta) {
+            attendanceViewDate.setMonth(attendanceViewDate.getMonth() + delta);
+            renderAttendanceCalendar();
+        }
+
+        function toggleAttendanceForDate(dateStr) {
+            const todayStr = new Date().toISOString().split('T')[0];
+            if (dateStr !== todayStr) {
+                showModal("출석 도장은 오늘 날짜에만 찍을 수 있단다! 오늘 날짜를 확인하렴.");
+                return;
+            }
+            let att = getAttendanceData();
+            if (att[dateStr]) { 
+                showModal("이미 출석 도장을 찍었단다! 출석은 한 번 체크하면 되돌릴 수 없도록 영구 저장되어 있단다.");
+                return; 
+            }
+            att[dateStr] = true;
+            saveAttendanceData(att);
+            renderAttendanceCalendar();
+            updateStreakDisplay();
+            showModal("오늘의 출석 도장이 영구적으로 찍혔습니다! 훌륭합니다!");
+        }
+
+        function toggleTodayAttendance() {
+            const todayStr = new Date().toISOString().split('T')[0];
+            toggleAttendanceForDate(todayStr);
+        }
+
+        function calculateCurrentStreak(attMap) {
+            let streak = 0;
+            let d = new Date();
+            while(true) {
+                let dStr = d.toISOString().split('T')[0];
+                if (attMap[dStr]) {
+                    streak++;
+                    d.setDate(d.getDate() - 1);
+                } else {
+                    if (streak === 0 && dStr === new Date().toISOString().split('T')[0]) {
+                        d.setDate(d.getDate() - 1);
+                        let yStr = d.toISOString().split('T')[0];
+                        if (attMap[yStr]) {
+                            streak++;
+                            d.setDate(d.getDate() - 1);
+                            continue;
+                        }
+                    }
+                    break;
+                }
+            }
+            return streak;
+        }
+
+        function updateStreakDisplay() {
+            const attMap = getAttendanceData();
+            const streak = calculateCurrentStreak(attMap);
+            const badge = document.getElementById('attendance-streak-badge');
+            const dashStreak = document.getElementById('dash-streak-text');
+            const streakHtml = `<i class="fa-solid fa-fire text-amber-300 mr-1"></i> 연속 ${streak}일 출석 중!`;
+            if(badge) badge.innerHTML = streakHtml;
+            if(dashStreak) dashStreak.innerText = `연속 ${streak}일 출석 달성중!`;
+        }
+
+        function renderAttendanceCalendar() {
+            const year = attendanceViewDate.getFullYear();
+            const month = attendanceViewDate.getMonth();
+            document.getElementById('attendance-month-title').innerText = `${year}년 ${month + 1}월`;
+
+            const attMap = getAttendanceData();
+            updateStreakDisplay();
+
+            const firstDayIndex = new Date(year, month, 1).getDay();
+            const lastDay = new Date(year, month + 1, 0).getDate();
+            const todayStr = new Date().toISOString().split('T')[0];
+
+            const gridContainer = document.getElementById('attendance-calendar-grid');
+            if(!gridContainer) return;
+            gridContainer.innerHTML = '';
+
+            for (let i = 0; i < firstDayIndex; i++) {
+                const emptyCell = document.createElement('div');
+                emptyCell.className = "h-14 sm:h-20 bg-slate-50/50 rounded-xl border border-slate-100 opacity-30";
+                gridContainer.appendChild(emptyCell);
+            }
+
+            for (let day = 1; day <= lastDay; day++) {
+                const mStr = (month + 1).toString().padStart(2, '0');
+                const dStr = day.toString().padStart(2, '0');
+                const currentCellDateStr = `${year}-${mStr}-${dStr}`;
+                
+                const isChecked = !!attMap[currentCellDateStr];
+                const isToday = (currentCellDateStr === todayStr);
+                const isExamDay = (currentCellDateStr === appData.examDate);
+                const perfListForDay = appData.performances.filter(p => p.date === currentCellDateStr);
+
+                const cell = document.createElement('div');
+                cell.className = `h-14 sm:h-20 rounded-xl border transition flex flex-col justify-between p-1.5 sm:p-2 relative select-none ${
+                    isChecked 
+                        ? 'bg-amber-50/90 border-amber-300 shadow-sm ring-1 ring-amber-400/40 cursor-default' 
+                        : (isToday ? 'bg-indigo-50/60 border-indigo-300 ring-2 ring-indigo-400 cursor-pointer hover:border-amber-300 hover:bg-amber-50/30' : 'bg-slate-50/70 border-slate-200 opacity-70 cursor-pointer')
+                }`;
+
+                cell.onclick = () => toggleAttendanceForDate(currentCellDateStr);
+
+                let topHtml = `<div class="flex justify-between items-center text-xs font-semibold ${isToday ? 'text-indigo-700 font-bold' : 'text-slate-700'}">
+                    <span>${day}</span>
+                    <div class="flex gap-1 flex-wrap justify-end">
+                        ${isExamDay ? '<span class="text-[9px] bg-rose-600 text-white px-1 rounded font-bold">시험</span>' : ''}
+                        ${perfListForDay.map(p => `<span class="text-[9px] bg-emerald-600 text-white px-1 rounded truncate max-w-[60px]" title="${p.subject}: ${p.title}">수행</span>`).join('')}
+                    </div>
+                </div>`;
+
+                let centerHtml = '';
+                if (isChecked) {
+                    centerHtml = `<div class="flex-grow flex items-center justify-center">
+                        <div class="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-amber-500 text-white flex items-center justify-center font-bold shadow-sm transform rotate-[-10deg] border-2 border-amber-200" title="완료됨(변경 불가)">
+                            <span class="font-hand text-sm sm:text-base">師</span>
+                        </div>
+                    </div>`;
+                } else if (isExamDay || perfListForDay.length > 0) {
+                    centerHtml = `<div class="flex-grow flex flex-col items-center justify-center text-[10px] leading-tight">
+                        ${isExamDay ? '<span class="text-rose-600 font-bold">🎯 시험일</span>' : ''}
+                        ${perfListForDay.map(p => `<span class="text-emerald-700 font-semibold truncate max-w-full" title="${p.subject}: ${p.title}">📋 ${p.subject} 수행</span>`).join('')}
+                    </div>`;
+                } else {
+                    centerHtml = `<div class="flex-grow flex items-center justify-center opacity-20 hover:opacity-50 transition">
+                        <span class="text-[10px] text-slate-400 font-medium hidden sm:inline">출석하기</span>
+                        <i class="fa-solid fa-plus text-slate-300 text-xs sm:hidden"></i>
+                    </div>`;
+                }
+
+                cell.innerHTML = topHtml + centerHtml;
+                gridContainer.appendChild(cell);
+            }
+        }
+
+        function addWeeklyTask() {
+            document.getElementById('weekly-input-subj').value = '';
+            document.getElementById('weekly-input-task').value = '';
+            document.getElementById('weekly-modal').classList.remove('hidden');
+        }
+
+        function closeWeeklyModal() {
+            document.getElementById('weekly-modal').classList.add('hidden');
+        }
+
+        function saveWeeklyModal() {
+            const subj = document.getElementById('weekly-input-subj').value.trim() || '기타';
+            const task = document.getElementById('weekly-input-task').value.trim();
+            if(!task) {
+                showModal("주간 학습 목표 내용을 입력해주세요!");
+                return;
+            }
+            appData.weeklyTasks.push({ id: Date.now(), subject: subj, task: task, done: false });
+            saveDataToStorage();
+            closeWeeklyModal();
+            renderWeeklyPlanner();
+            renderDashboard();
+            showModal("새로운 주간 학습 목표가 추가되었습니다!");
+        }
+
+        function toggleWeeklyTask(id) {
+            const t = appData.weeklyTasks.find(x => x.id === id);
+            if(t) { t.done = !t.done; saveDataToStorage(); renderWeeklyPlanner(); renderDashboard(); }
+        }
+
+        function deleteWeeklyTask(id) {
+            appData.weeklyTasks = appData.weeklyTasks.filter(x => x.id !== id);
+            saveDataToStorage();
+            renderWeeklyPlanner();
+        }
+
+        function renderWeeklyPlanner() {
+            const container = document.getElementById('weekly-columns-container');
+            if(!container) return;
+            container.innerHTML = `
+                <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 md:col-span-2 lg:col-span-4">
+                    <h3 class="font-bold text-slate-800 text-sm mb-3 flex items-center gap-2"><i class="fa-solid fa-book text-indigo-600"></i> 이번 주 과목별 학습 목표</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        ${appData.weeklyTasks.map(w => `
+                            <div class="bg-white p-3 rounded-lg border border-slate-200 shadow-sm flex items-start justify-between gap-2">
+                                <div class="flex items-start gap-2">
+                                    <input type="checkbox" ${w.done ? 'checked' : ''} onchange="toggleWeeklyTask(${w.id})" class="mt-1 w-4 h-4 text-indigo-600 rounded">
+                                    <div>
+                                        <span class="text-[10px] font-bold bg-indigo-100 text-indigo-700 px-1.5 py-0.5 rounded">${w.subject}</span>
+                                        <p class="text-xs text-slate-700 mt-1 ${w.done ? 'line-through text-slate-400' : ''}">${w.task}</p>
+                                    </div>
+                                </div>
+                                <button onclick="deleteWeeklyTask(${w.id})" class="text-slate-300 hover:text-rose-500 text-xs"><i class="fa-solid fa-xmark"></i></button>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+            const dashPrev = document.getElementById('dash-weekly-preview');
+            if(dashPrev) {
+                dashPrev.innerHTML = appData.weeklyTasks.slice(0, 3).map(w => `
+                    <div class="flex items-center gap-2">
+                        <i class="fa-solid fa-check text-purple-600 text-xs"></i>
+                        <span class="truncate ${w.done ? 'line-through text-slate-400' : 'text-slate-700'}"><strong>[${w.subject}]</strong> ${w.task}</span>
+                    </div>
+                `).join('');
+            }
+        }
+
+        function addDailyTodo() {
+            const txt = document.getElementById('daily-todo-input').value.trim();
+            if(!txt) return;
+            appData.dailyTodos.push({ id: Date.now(), text: txt, done: false });
+            document.getElementById('daily-todo-input').value = '';
+            saveDataToStorage();
+            renderDailyTodos();
+        }
+
+        function toggleDailyTodo(id) {
+            const item = appData.dailyTodos.find(x => x.id === id);
+            if(item) { item.done = !item.done; saveDataToStorage(); renderDailyTodos(); }
+        }
+
+        function deleteDailyTodo(id) {
+            appData.dailyTodos = appData.dailyTodos.filter(x => x.id !== id);
+            saveDataToStorage();
+            renderDailyTodos();
+        }
+
+        function renderDailyTodos() {
+            const list = document.getElementById('daily-todo-list');
+            if(!list) return;
+            list.innerHTML = appData.dailyTodos.map(item => `
+                <div class="bg-slate-50 border border-slate-200 p-3 rounded-xl flex items-center justify-between gap-2">
+                    <div class="flex items-center gap-3">
+                        <input type="checkbox" ${item.done ? 'checked' : ''} onchange="toggleDailyTodo(${item.id})" class="w-4 h-4 text-rose-500 rounded">
+                        <span class="text-xs sm:text-sm font-medium ${item.done ? 'line-through text-slate-400' : 'text-slate-800'}">${item.text}</span>
+                    </div>
+                    <button onclick="deleteDailyTodo(${item.id})" class="text-slate-400 hover:text-rose-600 text-xs"><i class="fa-solid fa-trash"></i></button>
+                </div>
+            `).join('');
+        }
+
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.getElementById('view-' + tabId).classList.remove('hidden');
+            
+            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+            const activeBtn = document.getElementById('tab-' + tabId);
+            if(activeBtn) activeBtn.classList.add('active');
+
+            if(tabId === 'grades') renderGrades();
+            if(tabId === 'roadmap') renderRoadmapSubjects();
+            if(tabId === 'monthly') renderAttendanceCalendar();
+        }
+
+        function refreshTeacherQuote() {
+            appData.teacherQuoteIndex = (appData.teacherQuoteIndex + 1) % TEACHER_QUOTES.length;
+            document.getElementById('banner-tag').innerText = TEACHER_QUOTES[appData.teacherQuoteIndex].tag;
+            document.getElementById('teacher-quote').innerText = TEACHER_QUOTES[appData.teacherQuoteIndex].text;
+        }
+
+        function renderDashboard() {
+            const container = document.getElementById('dashboard-urgent-perf');
+            if(!container) return;
+            container.innerHTML = appData.performances.map(p => `
+                <div class="flex items-center justify-between bg-amber-50 border border-amber-200 p-3 rounded-xl">
+                    <div>
+                        <span class="text-xs font-bold text-amber-700 bg-amber-200 px-2 py-0.5 rounded">${p.subject}</span>
+                        <span class="text-sm font-semibold text-slate-800 ml-2">${p.title}</span>
+                    </div>
+                    <span class="text-xs font-bold text-rose-600"><i class="fa-regular fa-clock"></i> ${p.date} 마감</span>
+                </div>
+            `).join('');
+        }
+
+        function renderPerformance() {
+            const container = document.getElementById('performance-grid');
+            if(!container) return;
+            if(appData.performances.length === 0) {
+                container.innerHTML = `
+                    <div class="col-span-full bg-slate-50 border border-slate-200 rounded-2xl p-8 text-center text-slate-500 text-xs">
+                        <i class="fa-solid fa-clipboard text-3xl text-slate-300 mb-2"></i>
+                        <p>등록된 수행평가가 없습니다. 상단의 '새 수행평가 등록' 버튼을 눌러 추가하세요!</p>
+                    </div>
+                `;
+                return;
+            }
+            container.innerHTML = appData.performances.map(p => `
+                <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200 border-t-4 border-t-emerald-500 flex flex-col justify-between">
+                    <div>
+                        <div class="flex justify-between items-start mb-2">
+                            <span class="text-xs font-bold bg-slate-100 text-slate-600 px-2 py-1 rounded">${p.subject}</span>
+                            <div class="flex items-center gap-1.5">
+                                <span class="text-xs font-bold text-emerald-600 bg-emerald-100 px-2 py-1 rounded-full">${p.type}</span>
+                                <button onclick="openPerformanceModal(${p.id})" class="text-slate-400 hover:text-indigo-600 text-xs p-1" title="수행평가 수정"><i class="fa-solid fa-pen"></i></button>
+                                <button onclick="deletePerformance(${p.id})" class="text-slate-300 hover:text-rose-600 text-xs p-1" title="수행평가 삭제"><i class="fa-solid fa-trash"></i></button>
+                            </div>
+                        </div>
+                        <h3 class="font-bold text-slate-800 text-sm mb-3">${p.title}</h3>
+                        <div class="text-xs text-slate-500 space-y-1 mb-3">
+                            <p><i class="fa-regular fa-calendar"></i> 마감: <strong class="text-slate-700">${p.date}</strong></p>
+                            <p><i class="fa-solid fa-percent"></i> 반영비율: <strong class="text-slate-700">${p.ratio}%</strong></p>
+                        </div>
+                        <div class="bg-slate-50 p-2.5 rounded-lg border border-slate-200 text-xs mb-3">
+                            <div class="flex justify-between items-center mb-1">
+                                <span class="font-bold text-slate-700"><i class="fa-solid fa-circle-info text-emerald-600"></i> 세부사항 (루브릭 / 메모)</span>
+                                <button onclick="openPerformanceModal(${p.id})" class="text-[10px] text-indigo-600 hover:underline"><i class="fa-solid fa-pen"></i> 수정</button>
+                            </div>
+                            <p class="text-slate-600 whitespace-pre-wrap">${p.details || '작성된 세부사항이 없습니다. 수정 버튼을 눌러 추가하세요.'}</p>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function openPerformanceModal(id = null) {
+            const modal = document.getElementById('performance-modal');
+            const titleEl = document.getElementById('perf-modal-title');
+            
+            if (id) {
+                const p = appData.performances.find(x => x.id === id);
+                if (!p) return;
+                titleEl.innerHTML = '<i class="fa-solid fa-pen-to-square text-emerald-600"></i> 수행평가 수정';
+                document.getElementById('perf-edit-id').value = p.id;
+                document.getElementById('perf-input-subj').value = p.subject;
+                document.getElementById('perf-input-title').value = p.title;
+                document.getElementById('perf-input-type').value = p.type;
+                document.getElementById('perf-input-date').value = p.date;
+                document.getElementById('perf-input-ratio').value = p.ratio;
+                document.getElementById('perf-input-details').value = p.details || '';
+            } else {
+                titleEl.innerHTML = '<i class="fa-solid fa-clipboard-check text-emerald-600"></i> 새 수행평가 등록';
+                document.getElementById('perf-edit-id').value = '';
+                document.getElementById('perf-input-subj').value = '';
+                document.getElementById('perf-input-title').value = '';
+                document.getElementById('perf-input-type').value = '보고서';
+                document.getElementById('perf-input-date').value = getFutureDateStr(7);
+                document.getElementById('perf-input-ratio').value = '20';
+                document.getElementById('perf-input-details').value = '';
+            }
+            modal.classList.remove('hidden');
+        }
+
+        function closePerformanceModal() {
+            document.getElementById('performance-modal').classList.add('hidden');
+        }
+
+        function savePerformanceModal() {
+            const editId = document.getElementById('perf-edit-id').value;
+            const subj = document.getElementById('perf-input-subj').value.trim() || '국어';
+            const title = document.getElementById('perf-input-title').value.trim() || '수행평가 과제';
+            const type = document.getElementById('perf-input-type').value.trim() || '보고서';
+            const date = document.getElementById('perf-input-date').value || getFutureDateStr(7);
+            const ratio = parseFloat(document.getElementById('perf-input-ratio').value) || 20;
+            const details = document.getElementById('perf-input-details').value.trim();
+
+            if (editId) {
+                const p = appData.performances.find(x => x.id == editId);
+                if (p) {
+                    p.subject = subj;
+                    p.title = title;
+                    p.type = type;
+                    p.date = date;
+                    p.ratio = ratio;
+                    p.details = details;
+                }
+                showModal("수행평가 정보가 수정되었습니다!");
+            } else {
+                appData.performances.push({
+                    id: Date.now(),
+                    subject: subj,
+                    title: title,
+                    type: type,
+                    date: date,
+                    ratio: ratio,
+                    details: details
+                });
+                showModal("새로운 수행평가가 등록되었습니다!");
+            }
+
+            saveDataToStorage();
+            closePerformanceModal();
+            renderPerformance();
+            renderDashboard();
+        }
+
+        function deletePerformance(id) {
+            appData.performances = appData.performances.filter(p => p.id !== id);
+            saveDataToStorage();
+            renderPerformance();
+            renderDashboard();
+            showModal("수행평가가 삭제되었습니다.");
+        }
+
+        function renderRoadmap() {
+            const stagesContainer = document.getElementById('roadmap-stages-container');
+            if(!stagesContainer) return;
+            const stages = [
+                { num: '1단계', name: '개념 완성 (1회독)', days: 'D-28 ~ D-21', desc: '교과서 정독 및 핵심 개념 노트 정리. 모르는 개념 없이 완벽히 이해하기.' },
+                { num: '2단계', name: '문제 풀이 (2회독)', days: 'D-20 ~ D-11', desc: '다양한 기출 문제 및 교과서 부교재 풀이. 유형별 풀이법 체화하기.' },
+                { num: '3단계', name: '오답 정복 (3회독)', days: 'D-10 ~ D-4', desc: '틀린 문제 집중 분석 및 오답노트 작성. 취약점 완벽 보완하기.' },
+                { num: '4단계', name: '백지 복습 (4회독)', days: 'D-3 ~ D-Day', desc: '백지에 핵심 목차와 공식을 막힘없이 적어보기. 실전 시뮬레이션.' }
+            ];
+
+            stagesContainer.innerHTML = stages.map(st => `
+                <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 border-t-4 border-t-sky-500 flex flex-col justify-between">
+                    <div>
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="text-xs font-bold bg-sky-100 text-sky-800 px-2 py-0.5 rounded-full">${st.num}</span>
+                            <span class="text-xs font-semibold text-slate-400">${st.days}</span>
+                        </div>
+                        <h3 class="font-bold text-slate-800 text-base mb-2">${st.name}</h3>
+                        <p class="text-xs text-slate-600 leading-relaxed">${st.desc}</p>
+                    </div>
+                </div>
+            `).join('');
+
+            renderRoadmapSubjects();
+        }
+
+        function renderRoadmapSubjects() {
+            const tbody = document.getElementById('subject-roadmap-tbody');
+            if(!tbody) return;
+            tbody.innerHTML = appData.subjects.map(s => `
+                <tr class="hover:bg-slate-50 transition">
+                    <td class="p-3 font-bold text-slate-800">${s.name}</td>
+                    <td class="p-3 text-slate-600">${s.target}점</td>
+                    <td class="p-3 text-center"><input type="checkbox" ${s.r1 ? 'checked' : ''} onchange="toggleSubjectCycle(${s.id}, 'r1')" class="w-4 h-4 text-sky-600 rounded"></td>
+                    <td class="p-3 text-center"><input type="checkbox" ${s.r2 ? 'checked' : ''} onchange="toggleSubjectCycle(${s.id}, 'r2')" class="w-4 h-4 text-sky-600 rounded"></td>
+                    <td class="p-3 text-center"><input type="checkbox" ${s.r3 ? 'checked' : ''} onchange="toggleSubjectCycle(${s.id}, 'r3')" class="w-4 h-4 text-sky-600 rounded"></td>
+                    <td class="p-3 text-center"><input type="checkbox" ${s.r4 ? 'checked' : ''} onchange="toggleSubjectCycle(${s.id}, 'r4')" class="w-4 h-4 text-sky-600 rounded"></td>
+                    <td class="p-3 text-center"><button onclick="deleteGradeSubject(${s.id})" class="text-slate-300 hover:text-rose-600"><i class="fa-solid fa-trash"></i></button></td>
+                </tr>
+            `).join('');
+        }
+
+        function toggleSubjectCycle(id, cycleKey) {
+            const s = appData.subjects.find(x => x.id === id);
+            if(s) {
+                s[cycleKey] = !s[cycleKey];
+                saveDataToStorage();
+            }
+        }
+
+        function addGradeSubjectFromSelect() {
+            const sel = document.getElementById('quick-subject-select');
+            const name = sel.value;
+            // Check if already exists
+            if(appData.subjects.some(s => s.name === name)) {
+                showModal(`이미 추가된 과목입니다: ${name}`);
+                return;
+            }
+            appData.subjects.push({
+                id: Date.now(),
+                name: name,
+                perfTitle: '수행평가 1',
+                target: 100,
+                r1: false, r2: false, r3: false, r4: false,
+                midScore: 85, finalScore: 90,
+                perfScore: 27, perfMax: 30,
+                perfRatio: 30, midRatio: 35, finalRatio: 35
+            });
+            saveDataToStorage();
+            renderGrades();
+            renderRoadmapSubjects();
+            showModal(`과목 '${name}'이(가) 추가되었습니다!`);
+        }
+
+        function addGradeSubject() {
+            document.getElementById('modal-subject-name').value = '';
+            document.getElementById('subject-modal').classList.remove('hidden');
+        }
+
+        function closeSubjectModal() {
+            document.getElementById('subject-modal').classList.add('hidden');
+        }
+
+        function saveSubjectModal() {
+            const name = document.getElementById('modal-subject-name').value.trim();
+            if(!name) {
+                showModal("과목명을 입력해주세요!");
+                return;
+            }
+            if(appData.subjects.some(s => s.name === name)) {
+                showModal(`이미 추가된 과목입니다: ${name}`);
+                return;
+            }
+            appData.subjects.push({
+                id: Date.now(),
+                name: name,
+                perfTitle: '수행평가 과제',
+                target: 100,
+                r1: false, r2: false, r3: false, r4: false,
+                midScore: 80, finalScore: 85,
+                perfScore: 25, perfMax: 30,
+                perfRatio: 30, midRatio: 35, finalRatio: 35
+            });
+            saveDataToStorage();
+            closeSubjectModal();
+            renderGrades();
+            renderRoadmapSubjects();
+            showModal(`과목 '${name}'이(가) 추가되었습니다!`);
+        }
+
+        function deleteGradeSubject(id) {
+            if(appData.subjects.length <= 1) {
+                showModal("최소 1개 이상의 과목이 필요합니다.");
+                return;
+            }
+            appData.subjects = appData.subjects.filter(x => x.id !== id);
+            saveDataToStorage();
+            renderGrades();
+            renderRoadmapSubjects();
+            showModal("과목이 삭제되었습니다.");
+        }
+
+        function renderGrades() {
+            const tbody = document.getElementById('grade-calc-tbody');
+            if(!tbody) return;
+            tbody.innerHTML = appData.subjects.map(s => `
+                <tr class="hover:bg-slate-50 transition">
+                    <td class="p-2 font-bold text-slate-800">
+                        <input type="text" value="${s.name}" onchange="updateSubjectField(${s.id}, 'name', this.value)" class="w-full bg-slate-50 border border-slate-200 rounded px-2 py-1 text-xs font-bold outline-none focus:border-indigo-500">
+                    </td>
+                    <td class="p-2">
+                        <input type="text" value="${s.perfTitle || '수행평가'}" onchange="updateSubjectField(${s.id}, 'perfTitle', this.value)" class="w-full bg-slate-50 border border-slate-200 rounded px-2 py-1 text-xs outline-none focus:border-indigo-500" placeholder="수행평가 이름">
+                    </td>
+                    <td class="p-2 text-center">
+                        <div class="flex items-center justify-center gap-1 text-[11px]">
+                            <input type="number" value="${s.perfRatio}" onchange="updateSubjectField(${s.id}, 'perfRatio', this.value)" class="w-10 bg-slate-50 border border-slate-200 rounded text-center py-0.5" title="수행비율">/
+                            <input type="number" value="${s.midRatio}" onchange="updateSubjectField(${s.id}, 'midRatio', this.value)" class="w-10 bg-slate-50 border border-slate-200 rounded text-center py-0.5" title="중간비율">/
+                            <input type="number" value="${s.finalRatio}" onchange="updateSubjectField(${s.id}, 'finalRatio', this.value)" class="w-10 bg-slate-50 border border-slate-200 rounded text-center py-0.5" title="기말비율">
+                        </div>
+                    </td>
+                    <td class="p-2 text-center bg-emerald-50/40">
+                        <div class="flex items-center justify-center gap-1">
+                            <input type="number" value="${s.perfScore}" onchange="updateSubjectField(${s.id}, 'perfScore', this.value)" class="w-12 bg-white border border-emerald-300 rounded text-center py-1 font-semibold text-emerald-800"> / 
+                            <input type="number" value="${s.perfMax}" onchange="updateSubjectField(${s.id}, 'perfMax', this.value)" class="w-12 bg-white border border-emerald-300 rounded text-center py-1">
+                        </div>
+                    </td>
+                    <td class="p-2 text-center bg-sky-50/40">
+                        <input type="number" value="${s.midScore}" onchange="updateSubjectField(${s.id}, 'midScore', this.value)" class="w-16 bg-white border border-sky-300 rounded text-center py-1 font-semibold text-sky-800 mx-auto">
+                    </td>
+                    <td class="p-2 text-center bg-indigo-50/40">
+                        <input type="number" value="${s.finalScore}" onchange="updateSubjectField(${s.id}, 'finalScore', this.value)" class="w-16 bg-white border border-indigo-300 rounded text-center py-1 font-semibold text-indigo-800 mx-auto">
+                    </td>
+                    <td class="p-2 text-center font-black text-slate-800" id="sub-final-${s.id}">0.0</td>
+                    <td class="p-2 text-center font-bold text-indigo-600" id="sub-grade-${s.id}">-등급</td>
+                    <td class="p-2 text-center">
+                        <button onclick="deleteGradeSubject(${s.id})" class="text-slate-300 hover:text-rose-600"><i class="fa-solid fa-trash"></i></button>
+                    </td>
+                </tr>
+            `).join('');
+            calculateGrades();
+        }
+
+        function updateSubjectField(id, field, val) {
+            const s = appData.subjects.find(x => x.id === id);
+            if(s) {
+                if(field === 'name' || field === 'perfTitle') s[field] = val;
+                else s[field] = parseFloat(val) || 0;
+                saveDataToStorage();
+                calculateGrades();
+            }
+        }
+
+        function calculateGrades() {
+            let totalWeightedScore = 0;
+            let totalPerfScore100Sum = 0;
+            let totalExamScoreSum = 0;
+            let topScore = -1;
+            let topSubjectName = '-';
+
+            appData.subjects.forEach(s => {
+                const perfRatio = s.perfRatio || 30;
+                const midRatio = s.midRatio || 35;
+                const finalRatio = s.finalRatio || 35;
+
+                const perf100 = s.perfMax > 0 ? (s.perfScore / s.perfMax) * 100 : 0;
+                totalPerfScore100Sum += perf100;
+
+                const examAvg = (s.midScore + s.finalScore) / 2;
+                totalExamScoreSum += examAvg;
+
+                const finalWeighted = (perf100 * (perfRatio / 100)) + (s.midScore * (midRatio / 100)) + (s.finalScore * (finalRatio / 100));
+                totalWeightedScore += finalWeighted;
+
+                const finalCell = document.getElementById(`sub-final-${s.id}`);
+                const gradeCell = document.getElementById(`sub-grade-${s.id}`);
+                if(finalCell) finalCell.innerText = finalWeighted.toFixed(1) + '점';
+
+                let estGrade = '1등급';
+                if(finalWeighted < 90) estGrade = '2등급';
+                if(finalWeighted < 80) estGrade = '3등급';
+                if(finalWeighted < 70) estGrade = '4등급';
+                if(finalWeighted < 60) estGrade = '5등급';
+                if(gradeCell) gradeCell.innerText = estGrade;
+
+                if(finalWeighted > topScore) {
+                    topScore = finalWeighted;
+                    topSubjectName = s.name;
+                }
+            });
+
+            const count = appData.subjects.length || 1;
+            const overallAvg = totalWeightedScore / count;
+            const perfAvg100 = totalPerfScore100Sum / count;
+            const examAvg100 = totalExamScoreSum / count;
+
+            const statOverall = document.getElementById('stat-overall-avg');
+            const statPerf = document.getElementById('stat-perf-avg');
+            const statExam = document.getElementById('stat-exam-avg');
+            const statTopSub = document.getElementById('stat-top-subject');
+            const statTopScore = document.getElementById('stat-top-score');
+
+            if(statOverall) statOverall.innerText = overallAvg.toFixed(1) + '점';
+            if(statPerf) statPerf.innerText = perfAvg100.toFixed(1) + '점';
+            if(statExam) statExam.innerText = examAvg100.toFixed(1) + '점';
+            if(statTopSub) statTopSub.innerText = topSubjectName;
+            if(statTopScore) statTopScore.innerText = topScore >= 0 ? `${topScore.toFixed(1)}점 (최고득점)` : '-';
+
+            generateTeacherReport(overallAvg, perfAvg100, examAvg100, topSubjectName);
+        }
+
+        function generateTeacherReport(avg, perfAvg, examAvg, topSub) {
+            const reportEl = document.getElementById('teacher-report-content');
+            if(!reportEl) return;
+
+            let comment = "";
+            if (avg >= 92) {
+                comment = `"${topSub} 과목을 비롯하여 전체 평균 ${avg.toFixed(1)}점으로 매우 훌륭한 최상위권 성적을 유지하고 있구나! 수행평가(${perfAvg.toFixed(1)}점)와 지필평가 비율까지 스스로 맞추어 분석하는 모습이 대견스럽다. 이 기조를 시험일까지 끝까지 유지하렴!"`;
+            } else if (avg >= 80) {
+                comment = `"${avg.toFixed(1)}점으로 상위권 도약의 가능성이 아주 높단다! 내가 설정한 과목별 반영 비율에 맞춰 수행평가 이름과 점수를 꼼꼼히 챙기고, 지필고사 회독 주기를 한 번 더 돌린다면 올백을 달성할 수 있을 것이야. 힘내자!"`;
+            } else {
+                comment = `"${avg.toFixed(1)}점으로 지금부터 선생님의 4주 로드맵을 바짝 따르면 드라마틱한 성적 향상을 이룰 수 있단다. 과목별로 취약한 수행평가와 중간·기말 반영 비율을 점검하며 학습 계획을 세워보렴!"`;
+            }
+            reportEl.innerText = comment;
+        }
+    </script>
+</body>
+</html>
